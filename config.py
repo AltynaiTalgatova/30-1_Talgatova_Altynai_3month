@@ -7,5 +7,3 @@ TOKEN = config('TOKEN')
 bot = Bot(TOKEN)
 dp = Dispatcher(bot=bot, storage=storage)
 ADMINs = (1853390650,)
-
-# print(TOKEN)
