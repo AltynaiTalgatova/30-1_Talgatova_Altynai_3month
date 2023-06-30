@@ -4,6 +4,8 @@ from config import bot, dp
 from .keyboards import start_markup
 from aiogram.dispatcher.filters import Text
 from database.mybot_db import sql_command_random
+from parser.news1 import parser
+from aiogram.types import ParseMode
 
 
 async def start_command(message: types.Message) -> None:
@@ -59,8 +61,23 @@ async def get_random_mentor(message: types.Message) -> None:
                          f"{random_mentor[-1]}")
 
 
+async def get_news(message: types.Message) -> None:
+    news = parser()
+    for i in news:
+        await message.answer_photo(
+            i['image'],
+            caption=f"<b>{i['time']}</b>\n"
+                    f"<a href='{i['url']}'>{i['title']}</a>\n",
+            reply_markup=InlineKeyboardMarkup().add(
+                InlineKeyboardButton("Read", url=i['url'])
+            ),
+            parse_mode=ParseMode.HTML
+        )
+
+
 def register_handlers_commands(dp: Dispatcher):
     dp.register_message_handler(start_command, commands=['start'])
     dp.register_message_handler(quiz_1, commands=['quiz'])
     dp.register_message_handler(meme_handler, commands=['meme'])
     dp.register_message_handler(get_random_mentor, Text(equals="get", ignore_case=True))
+    dp.register_message_handler(get_news, commands=['news'])
